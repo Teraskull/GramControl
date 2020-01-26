@@ -5,5 +5,4 @@ __pycache__/
 version.txt
 LICENSE
 requirements.txt
-icon.ico
-database.json
+gpio_state.pkl

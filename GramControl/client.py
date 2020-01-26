@@ -12,29 +12,29 @@ import telebot
 
 
 # Telegram values
-# TOKEN = 'TOKEN'
-# my_chat_id = ID
+TOKEN = 'TOKEN'
+my_chat_id = ID
 
-# bot = telebot.AsyncTeleBot(TOKEN)
-# bot.send_message(my_chat_id, 'check_server')
-#
-#
-# @bot.channel_post_handler(content_types=['text'])
-# def send_text(message):
-#     if message.text == 'Server offline.':
-#         ui.status_icon.setIcon(QIcon(':/button/13.png'))
-#     else:
-#         ui.status_icon.setIcon(QIcon(':/button/12.png'))
-#
-#
-# def botd():
-#     bot.infinity_polling(True)
-#
-#
-# def create_thread():
-#     bot_daemon = threading.Thread(target=botd)
-#     bot_daemon.setDaemon(True)
-#     bot_daemon.start()
+bot = telebot.AsyncTeleBot(TOKEN)
+bot.send_message(my_chat_id, 'check_server')
+
+
+@bot.channel_post_handler(content_types=['text'])
+def send_text(message):
+    if message.text == 'Server offline.':
+        ui.status_icon.setIcon(QIcon(':/button/13.png'))
+    else:
+        ui.status_icon.setIcon(QIcon(':/button/12.png'))
+
+
+def botd():
+    bot.infinity_polling(True)
+
+
+def create_thread():
+    bot_daemon = threading.Thread(target=botd)
+    bot_daemon.setDaemon(True)
+    bot_daemon.start()
 
 
 class Logic():
@@ -222,7 +222,7 @@ class Logic():
 
 
 if __name__ == '__main__':
-    # create_thread()
+    create_thread()
     app = QApplication(sys.argv)
     app.setFont(QFont('century gothic', 20, 50))
     ui = MainWindowUI()
