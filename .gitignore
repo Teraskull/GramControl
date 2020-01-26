@@ -6,3 +6,4 @@ version.txt
 LICENSE
 requirements.txt
 gpio_state.pkl
+database.json
