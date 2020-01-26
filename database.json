@@ -1,0 +1,17 @@
+{
+    "home": {
+        "roomName": "Default Room",
+        "light1": "Light One",
+        "light2": "Light Two",
+        "light3": "Light Three",
+        "button1": false,
+        "button2": false,
+        "button3": false
+    },
+    "settings": {
+        "button1": false
+    },
+    "sidebar": {
+        "mode": false
+    }
+}

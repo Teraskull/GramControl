@@ -11,8 +11,11 @@ import threading
 import telebot
 
 
-# my_chat_id = 0
-# bot = telebot.AsyncTeleBot('')
+# Telegram values
+# TOKEN = 'TOKEN'
+# my_chat_id = ID
+
+# bot = telebot.AsyncTeleBot(TOKEN)
 # bot.send_message(my_chat_id, 'check_server')
 #
 #

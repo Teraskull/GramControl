@@ -1,6 +1,6 @@
 # GramControl
 
-[![Version](https://img.shields.io/badge/Version-v3.02-brightgreen.svg)](https://github.com/Teraskull/GramControl) [![Release](https://img.shields.io/badge/Release-Stable-blueviolet.svg)](https://github.com/Teraskull/GramControl) [![License](https://img.shields.io/badge/License-GPL%202.0-blue.svg)](https://github.com/Teraskull/GramControl/blob/master/LICENSE)
+[![Version](https://img.shields.io/badge/Version-v5.5.2-brightgreen.svg)](https://github.com/Teraskull/GramControl) [![Release](https://img.shields.io/badge/Release-Stable-blueviolet.svg)](https://github.com/Teraskull/GramControl) [![License](https://img.shields.io/badge/License-GPL%202.0-blue.svg)](https://github.com/Teraskull/GramControl/blob/master/LICENSE)
 
 **GramControl** is a Windows GUI client application for communicating with the GramBase server.\
 **GramBase** is a [Telegram](https://telegram.org/) Python bot, that acts as a server and controls 3 separate outputs via the GPIO pins of a Raspberry Pi.
@@ -19,24 +19,33 @@
   - Telegram API library - [pyTelegramBotAPI](https://github.com/eternnoir/pyTelegramBotAPI)
   ```bash
 > pip3 install pyTelegramBotAPI
-```
+  ```
+
+  - PyQT5 GUI library - [PyQT5](https://riverbankcomputing.com/software/pyqt/download5)
+
+  ```bash
+> pip3 install pyqt5
+  ```
+
+
 
 ### Software for Raspbian:
+
   - Python3 with pip
   ```bash
 $ sudo apt update
 $ sudo apt upgrade
 $ sudo apt install python3
 $ sudo apt install python3-pip
-```
+  ```
   - Telegram API library - [pyTelegramBotAPI](https://github.com/eternnoir/pyTelegramBotAPI)
   ```bash
 $ sudo pip3 install pyTelegramBotAPI
-```
+  ```
   - GPIO control library (Is preinstalled on Raspberry Pi) - [GPIO Zero](https://gpiozero.readthedocs.io/en/stable/)
   ```bash
 $ sudo apt install python3-gpiozero
-```
+  ```
 
 ## Getting started
 
@@ -61,13 +70,13 @@ Once everything is set up, navigate to the directories and run the scripts:
 #### On Windows:
   ```bash
 > cd /path/to/script/directory/
-> python3 GramControl.py
-```
+> python3 client.py
+  ```
 #### On Raspbian:
   ```bash
 $ cd /path/to/script/directory/
-$ python3 GramBase.py
-```
+$ python3 bot.py
+  ```
 
 ## User manual
 
@@ -78,24 +87,24 @@ $ python3 GramBase.py
 
 Functions of each button in the Windows application.
 
-| Button | Function |
+| Label | Switch |
 | ------ | ------ |
-| gpio_1 | Toggle first pin. |
-| gpio_2 | Toggle second pin. |
-| gpio_3 | Toggle third pin. |
-| Status | Check server status. |
+| Light One | Toggle first pin. |
+| Light Two | Toggle second pin. |
+| Light Three | Toggle third pin. |
+| Default Names | Use predefined names. |
 | All ON | Turn all pins on. |
 | All OFF | Turn all pins off. |
 
 ## Functions
-  - Bot uses a preinstalled Python [Pickle library](https://docs.python.org/3/library/pickle.html) to store variables. If the Client/Server is shut down while some GPIO pins are active, their state will be saved and will be restored next time you run the scripts.
+  - Bot uses a preinstalled Python [JSON library](https://docs.python.org/3/library/json.html) to store variables. If the Client/Server is shut down while some GPIO pins are active, their state will be saved and will be restored next time you run the scripts.
 
 ### To-dos
- - Switch to JSON serialization
+ - ✔ Switch to JSON serialization
  - Add more GPIO outputs(If needed)
  - Make GPIO pin state restoring optional
- - Add Settings menu
- - Change button names through settings menu
+ - ✔ Add Settings menu
+ - ✔ Add ability to edit button labels
 
 ## License
 

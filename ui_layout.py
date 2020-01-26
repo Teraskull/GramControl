@@ -163,7 +163,6 @@ Backend - Anton Grouchtchak
 '''
         self.credits_label_1.setText(credits_text)
         self.credits_label_1.setFont(QFont('century gothic', 12, 50))
-        self.credits_label_1.setAlignment(Qt.AlignCenter)
 
         self.credits_label_2 = QLabel(self.frame_credits)
         self.credits_label_2.setGeometry(QRect(0, 150, 409, 30))
