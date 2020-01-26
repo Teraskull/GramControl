@@ -93,11 +93,11 @@ Functions of each button in the Windows application.
 | Light Two | Toggle second pin. |
 | Light Three | Toggle third pin. |
 | Default Names | Use predefined names. |
-| All ON | Turn all pins on. |
-| All OFF | Turn all pins off. |
 
 ## Functions
   - Bot uses a preinstalled Python [JSON library](https://docs.python.org/3/library/json.html) to store variables. If the Client/Server is shut down while some GPIO pins are active, their state will be saved and will be restored next time you run the scripts.
+  - Bottom left bulb icon lights up if there is connection with the server.
+  - Switch light and dark themes with the bottom left moon icon.
 
 ### To-dos
  - ✔ Switch to JSON serialization
