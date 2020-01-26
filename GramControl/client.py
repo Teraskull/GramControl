@@ -198,7 +198,7 @@ class Logic():
             self.data['home']['button1'] = False
             ui.switch_1.setIcon(QIcon(ui.img_off))
         self.db.save_database(self.data)
-        # bot.send_message(my_chat_id, 'pin_1')
+        bot.send_message(my_chat_id, 'pin_1')
 
     def toggle_switch_2(self):
         if ui.switch_2.isChecked():
@@ -208,7 +208,7 @@ class Logic():
             self.data['home']['button2'] = False
             ui.switch_2.setIcon(QIcon(ui.img_off))
         self.db.save_database(self.data)
-        # bot.send_message(my_chat_id, 'pin_2')
+        bot.send_message(my_chat_id, 'pin_2')
 
     def toggle_switch_3(self):
         if ui.switch_3.isChecked():
@@ -218,7 +218,7 @@ class Logic():
             self.data['home']['button3'] = False
             ui.switch_3.setIcon(QIcon(ui.img_off))
         self.db.save_database(self.data)
-        # bot.send_message(my_chat_id, 'pin_3')
+        bot.send_message(my_chat_id, 'pin_3')
 
 
 if __name__ == '__main__':
