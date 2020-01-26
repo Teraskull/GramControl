@@ -1,2 +1,9 @@
 # Don't track content of these folders
 __pycache__/
+
+
+version.txt
+LICENSE
+requirements.txt
+icon.ico
+database.json
