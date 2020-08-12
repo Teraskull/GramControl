@@ -1,9 +1,8 @@
-# Don't track content of these folders
 __pycache__/
+*.py[cod]
+*$py.class
 
-
-version.txt
-LICENSE
-requirements.txt
-gpio_state.pkl
-database.json
+*.log
+*.log.[123]
+*.json
+.env
