@@ -1,6 +1,6 @@
 # GramControl
 
-[![Version](https://img.shields.io/badge/Version-v5.5.2-brightgreen.svg)](https://github.com/Teraskull/GramControl) [![Release](https://img.shields.io/badge/Release-Stable-blueviolet.svg)](https://github.com/Teraskull/GramControl) [![License](https://img.shields.io/badge/License-GPL%202.0-blue.svg)](https://github.com/Teraskull/GramControl/blob/master/LICENSE)
+[![Version](https://img.shields.io/badge/Version-v5.5.2-brightgreen.svg?style=flat-square)](https://github.com/Teraskull/GramControl) [![Release](https://img.shields.io/badge/Release-Stable-blueviolet.svg?style=flat-square)](https://github.com/Teraskull/GramControl) [![License](https://img.shields.io/github/license/Teraskull/GramControl?style=flat-square)](https://github.com/Teraskull/GramControl/blob/master/LICENSE)
 
 **GramControl** is a Windows GUI client application for communicating with the GramBase server.\
 **GramBase** is a [Telegram](https://telegram.org/) Python bot, that acts as a server and controls 3 separate outputs via the GPIO pins of a Raspberry Pi.
@@ -110,5 +110,5 @@ Functions of each button in the Windows application.
 
 This software is available under the following licenses:
 
-  * GPL-2.0
+  * GPL-3.0
 
