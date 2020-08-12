@@ -10,11 +10,39 @@ import pickle
 import os
 import atexit
 from telebot import types
+from aiogram import Bot, Dispatcher, executor, types
+from environs import Env, EnvValidationError
+from aiogram.utils import exceptions
+import logging
 # from gpiozero import LEDBoard
 
 # leds = LEDBoard(17, 27, 22)
 
+logging.basicConfig(handlers=[
+                    logging.StreamHandler()
+                    ],
+                    format='%(asctime)s - %(levelname)s - %(message)s',
+                    datefmt='%Y.%m.%d %H:%M:%S',
+                    level=logging.INFO
+                    )
+
+aio_logger = logging.getLogger("aiogram")
+aio_logger.setLevel(logging.ERROR)
+logger = logging.getLogger('dev')
+logger.setLevel(logging.DEBUG)
+
+env = Env()
+env.read_env()
+try:
+    TELEGRAM_TOKEN = env("TELEGRAM_TOKEN")
+    MY_CHAT_ID = env.int("MY_CHAT_ID")
+    BOT_DEV = env.bool("BOT_DEV")
+except EnvValidationError as env_error:
+    logger.error(env_error)
+
 bot = telebot.TeleBot(config.token)
+# bot = Bot(token=TELEGRAM_TOKEN, parse_mode="html")
+# dp = Dispatcher(bot)
 
 # Values
 my_chat_id = config.my_chat_id
