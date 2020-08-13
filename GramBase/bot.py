@@ -1,20 +1,13 @@
 # -*- coding: utf-8 -*-
-#
-# GramControl Bot - @GramControlBot
-#
-# Anton Grouchtchak 2020
-
-import config
-import telebot
-import pickle
-import os
-import atexit
-from telebot import types
 from aiogram import Bot, Dispatcher, executor, types
 from environs import Env, EnvValidationError
 from aiogram.utils import exceptions
-import logging
 # from gpiozero import LEDBoard
+from html import escape
+import logging
+import config
+import pickle
+import os
 
 # leds = LEDBoard(17, 27, 22)
 
@@ -36,27 +29,29 @@ env.read_env()
 try:
     TELEGRAM_TOKEN = env("TELEGRAM_TOKEN")
     MY_CHAT_ID = env.int("MY_CHAT_ID")
+    CHANNEL_ID = env.int("CHANNEL_ID")
     BOT_DEV = env.bool("BOT_DEV")
 except EnvValidationError as env_error:
     logger.error(env_error)
 
-bot = telebot.TeleBot(config.token)
-# bot = Bot(token=TELEGRAM_TOKEN, parse_mode="html")
-# dp = Dispatcher(bot)
+bot = Bot(token=TELEGRAM_TOKEN, parse_mode="html")
+dp = Dispatcher(bot)
+
+if BOT_DEV:
+    logger.debug('BOT_DEV')
+    chat_id_list = [CHANNEL_ID, MY_CHAT_ID]
+else:
+    chat_id_list = [CHANNEL_ID, MY_CHAT_ID]
 
 # Values
-my_chat_id = config.my_chat_id
-info_text = config.info_text
 server_online = 'Server online.'
 server_offline = 'Server offline.'
 
 
-def exit_handler():
-    bot.send_message(my_chat_id, server_offline)
-    # save_state()
-    print(' Interrupted by user')
-    print(' Saved variables to gpio_state.pkl')
-    # leds.close()
+# Handle errors. [BOT]
+@dp.errors_handler()
+async def errors_handler(update, error):
+    logger.error(f'Update: {update}\n{error}')
 
 
 class Button:
@@ -77,34 +72,33 @@ room_3 = Button(False)
 
 
 # Send text 'Server online.' when connected.
-bot.send_message(my_chat_id, server_online)
+# bot.send_message(MY_CHAT_ID, server_online)
 
 
 # Handle the '/start' command.
-@bot.message_handler(commands=['start'])
-def welcome_message(message):
-    if message.chat.id == 212947118:
-        print(server_online)
+@dp.message_handler(user_id=MY_CHAT_ID, chat_id=chat_id_list, commands=['start'])
+async def info_message(message: types.Message):
+    logger.info(server_online)
 
 
-# Handle text messages.
-@bot.channel_post_handler(content_types=['text'])
-def send_text(message):
-    if message.chat.id == my_chat_id:
+# Handle messages.
+@dp.edited_channel_post_handler(chat_id=chat_id_list, content_types=['text'])  # FIX chat_id bug
+@dp.channel_post_handler(chat_id=chat_id_list, content_types=['text'])
+async def send_text(message: types.Message):
+    new_text = escape(message.text.lower())
 
-        my_text = message.text.lower()
+    if new_text == 'check_server':
+        await message.answer(server_online)
+        logger.info(server_online)
 
-        if my_text == 'check_server':
-            bot.send_message(my_chat_id, server_online)
+    elif new_text == 'pin_1':
+        room_1.toggle(0)
 
-        elif my_text == 'pin_1':
-            room_1.toggle(0)
+    elif new_text == 'pin_2':
+        room_2.toggle(1)
 
-        elif my_text == 'pin_2':
-            room_2.toggle(1)
-
-        elif my_text == 'pin_3':
-            room_3.toggle(2)
+    elif new_text == 'pin_3':
+        room_3.toggle(2)
 
 
 # Save state of pins
@@ -123,8 +117,15 @@ else:
     save_state()
 
 
-if __name__ == '__main__':
-    try:
-        bot.infinity_polling(True)
-    finally:
-        atexit.register(exit_handler)
+if __name__ == "__main__":
+    while True:
+        try:
+            logger.info(f'[{config.server_version}] Server active.')
+            executor.start_polling(dp, skip_updates=True)
+            break
+        finally:
+            logger.info(f'[{config.server_version}] Server inactive.')
+            logger.info(f'[{config.server_version}] Saved variables to gpio_state.pkl')
+            # bot.send_message(MY_CHAT_ID, server_offline)
+            # save_state()
+            # leds.close()

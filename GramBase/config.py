@@ -1,8 +1,3 @@
-# Telegram values
-token = 'TOKEN'
-my_chat_id = ID
-
-
 # Version of script
 server_version = '3.1.5'
 
