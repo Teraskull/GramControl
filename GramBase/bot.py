@@ -5,11 +5,12 @@ from aiogram.utils import exceptions
 # from gpiozero import LEDBoard
 from html import escape
 import logging
-import config
 import pickle
 import os
 
 # leds = LEDBoard(17, 27, 22)
+
+__version__ = '3.1.5'
 
 logging.basicConfig(handlers=[
                     logging.StreamHandler()
@@ -30,20 +31,14 @@ try:
     TELEGRAM_TOKEN = env("TELEGRAM_TOKEN")
     MY_CHAT_ID = env.int("MY_CHAT_ID")
     CHANNEL_ID = env.int("CHANNEL_ID")
-    BOT_DEV = env.bool("BOT_DEV")
 except EnvValidationError as env_error:
     logger.error(env_error)
 
 bot = Bot(token=TELEGRAM_TOKEN, parse_mode="html")
 dp = Dispatcher(bot)
 
-if BOT_DEV:
-    logger.debug('BOT_DEV')
-    chat_id_list = [CHANNEL_ID, MY_CHAT_ID]
-else:
-    chat_id_list = [CHANNEL_ID, MY_CHAT_ID]
-
 # Values
+chat_id_list = [CHANNEL_ID, MY_CHAT_ID]
 server_online = 'Server online.'
 server_offline = 'Server offline.'
 
@@ -71,25 +66,20 @@ room_2 = Button(False)
 room_3 = Button(False)
 
 
-# Send text 'Server online.' when connected.
-# bot.send_message(MY_CHAT_ID, server_online)
-
-
 # Handle the '/start' command.
-@dp.message_handler(user_id=MY_CHAT_ID, chat_id=chat_id_list, commands=['start'])
+@dp.message_handler(user_id=MY_CHAT_ID, chat_id=MY_CHAT_ID, commands=['start'])
 async def info_message(message: types.Message):
-    logger.info(server_online)
+    await message.answer(server_online)
 
 
-# Handle messages.
-@dp.edited_channel_post_handler(chat_id=chat_id_list, content_types=['text'])  # FIX chat_id bug
-@dp.channel_post_handler(chat_id=chat_id_list, content_types=['text'])
+# Handle messages. (Temporary lambda channel chat_id fix, issue #375)
+@dp.edited_channel_post_handler(lambda message: message.chat.id in chat_id_list, content_types=['text'])
+@dp.channel_post_handler(lambda message: message.chat.id in chat_id_list, content_types=['text'])
 async def send_text(message: types.Message):
     new_text = escape(message.text.lower())
 
     if new_text == 'check_server':
         await message.answer(server_online)
-        logger.info(server_online)
 
     elif new_text == 'pin_1':
         room_1.toggle(0)
@@ -117,15 +107,23 @@ else:
     save_state()
 
 
+async def on_startup(dp):
+    await bot.send_message(CHANNEL_ID, server_online)
+    logger.info(f'[{__version__}] {server_online}')
+
+
+async def on_shutdown():
+    await bot.send_message(CHANNEL_ID, server_offline)
+    # save_state()
+    # leds.close()
+    logger.info(f'[{__version__}] {server_offline}')
+    logger.info(f'[{__version__}] Saved variables to gpio_state.pkl')
+
+
 if __name__ == "__main__":
     while True:
         try:
-            logger.info(f'[{config.server_version}] Server active.')
-            executor.start_polling(dp, skip_updates=True)
+            executor.start_polling(dp, on_startup=on_startup, skip_updates=True)
             break
         finally:
-            logger.info(f'[{config.server_version}] Server inactive.')
-            logger.info(f'[{config.server_version}] Saved variables to gpio_state.pkl')
-            # bot.send_message(MY_CHAT_ID, server_offline)
-            # save_state()
-            # leds.close()
+            dp.loop.run_until_complete(on_shutdown())  # Call on_shutdown() from separate loop
