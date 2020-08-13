@@ -1,6 +1,25 @@
-# GramControl
+<p align="center">
+  <a href="https://github.com/Teraskull/GramControl"><img src="GramControl/icon.ico"></a>
+</p>
+<h1 align="center">
+  GramControl
+</h1>
 
-[![Version](https://img.shields.io/badge/Version-v5.5.2-brightgreen.svg?style=flat-square)](https://github.com/Teraskull/GramControl) [![Release](https://img.shields.io/badge/Release-Stable-blueviolet.svg?style=flat-square)](https://github.com/Teraskull/GramControl) [![License](https://img.shields.io/github/license/Teraskull/GramControl?style=flat-square)](https://github.com/Teraskull/GramControl/blob/master/LICENSE)
+<p align="center">
+  IoT device based on the Telegram API.
+</p>
+
+<p align="center">
+  <a style="text-decoration:none" href="https://github.com/Teraskull/GramControl">
+    <img src="https://img.shields.io/badge/Version-v4.0.0-brightgreen.svg?style=flat-square" alt="Version" />
+  </a>
+  <a style="text-decoration:none" href="https://github.com/Teraskull/GramControl">
+    <img src="https://img.shields.io/badge/Release-Stable-blueviolet.svg?style=flat-square" alt="Release" />
+  </a>
+  <a style="text-decoration:none" href="https://github.com/Teraskull/GramControl/blob/master/LICENSE">
+    <img src="https://img.shields.io/github/license/Teraskull/GramControl?style=flat-square" alt="License" />
+  </a>
+</p>
 
 **GramControl** is a Windows GUI client application for communicating with the GramBase server.\
 **GramBase** is a [Telegram](https://telegram.org/) Python bot, that acts as a server and controls 3 separate outputs via the GPIO pins of a Raspberry Pi.
@@ -11,41 +30,36 @@
   * gpio_1 - BCM(17)
   * gpio_2 - BCM(27)
   * gpio_3 - BCM(22)
-- SD Card with preinstalled [Raspbian Buster](https://www.raspberrypi.org/downloads/raspbian/) (Desktop or Lite)
+- SD Card with preinstalled [Raspberry Pi OS](https://www.raspberrypi.org/downloads/raspberry-pi-os/) (Desktop or Lite)
 - A Windows machine to run the application
 
-### Software for Windows:
-  - Python3 with pip - [Python 3.8](https://www.python.org/downloads/)
-  - Telegram API library - [pyTelegramBotAPI](https://github.com/eternnoir/pyTelegramBotAPI)
-  ```bash
-> pip3 install pyTelegramBotAPI
-  ```
 
-  - PyQT5 GUI library - [PyQT5](https://riverbankcomputing.com/software/pyqt/download5)
+## Requirements for Windows:
 
-  ```bash
-> pip3 install pyqt5
-  ```
+* Python 3.6+
+
+* [Aiogram](https://github.com/aiogram/aiogram) library
+    ```console
+    $ pip install aiogram
+    ```
+* [PyQt5](https://pypi.org/project/PyQt5/) GUI framework
+    ```console
+    $ pip install pyqt5
+    ```
 
 
+### Requirements for Raspberry Pi OS:
 
-### Software for Raspbian:
+* Python 3.6+
 
-  - Python3 with pip
-  ```bash
-$ sudo apt update
-$ sudo apt upgrade
-$ sudo apt install python3
-$ sudo apt install python3-pip
-  ```
-  - Telegram API library - [pyTelegramBotAPI](https://github.com/eternnoir/pyTelegramBotAPI)
-  ```bash
-$ sudo pip3 install pyTelegramBotAPI
-  ```
-  - GPIO control library (Is preinstalled on Raspberry Pi) - [GPIO Zero](https://gpiozero.readthedocs.io/en/stable/)
-  ```bash
-$ sudo apt install python3-gpiozero
-  ```
+* [Aiogram](https://github.com/aiogram/aiogram) library
+    ```console
+    $ pip install aiogram
+    ```
+* [GPIO Zero](https://pypi.org/project/gpiozero/) library (Preinstalled on Raspberry Pi OS)
+    ```console
+    $ pip install gpiozero
+    ```
 
 ## Getting started
 
@@ -53,29 +67,30 @@ To start, you need a [Telegram](https://telegram.org/) account.
 Create two bots (Client and Server), disable their Group Privacy, allow Groups, and get their `TOKEN` using [@BotFather](https://core.telegram.org/bots#6-botfather).
 As the Telegram API does not allow bots to communicate with each other directly, 
 create a Telegram [channel](https://telegram.org/faq_channels) and add created bots to it.
-Write down the channel `ID`. You can find the `ID` by writing in the channel and forwarding the message to [@getidsbot](https://t.me/getidsbot).\
-*Note: The channel `ID` is in the **"Origin chat"** tab, not **"You"** tab.*
+Write down the channel `ID`. You can find the `ID` by writing in the channel and forwarding the message to [@my_id_bot](https://t.me/my_id_bot).\
+*Note: You should receive a reply like "This channel's ID is `-1234567890`"*\
+Repeat the process with your own `CHAT_ID`.
 
-To be able to use the scripts with the bots, replace the `TOKEN` and the `ID` in the scripts with your own values.
+To be able to use the scripts with the bots, create an `.env` file, paste the following properties, and replace the `TOKEN`, `CHAT_ID` and the `ID` with your own values.
+
 ```python
-# Telegram values
-token = 'TOKEN'
-my_chat_id = ID
+TELEGRAM_TOKEN = "TOKEN"
+MY_CHAT_ID = "CHAT_ID"
+CHANNEL_ID = "ID"
 ```
-*Note: Make sure that `TOKEN` is inside quotation marks and `ID` is without them.*
 
 
-Generally, you don't need to configure anything in the scripts, everything should work after you set your `TOKEN` and `ID` values.
+Generally, you don't need to configure anything in the scripts, everything should work after you setup your `.env` file.
 Once everything is set up, navigate to the directories and run the scripts:
 #### On Windows:
-  ```bash
+  ```console
 > cd /path/to/script/directory/
-> python3 client.py
+> python client.py
   ```
-#### On Raspbian:
-  ```bash
+#### On Raspberry Pi OS:
+  ```console
 $ cd /path/to/script/directory/
-$ python3 bot.py
+$ python bot.py
   ```
 
 ## User manual
@@ -83,7 +98,7 @@ $ python3 bot.py
   - Find your bots, created with [@BotFather](https://telegram.me/BotFather), using the search bar.
   - Once found, press `START` on the bottom to initialize them.
 
-### Telegram Keyboard Buttons
+### Windows Application description
 
 Functions of each button in the Windows application.
 
@@ -95,7 +110,7 @@ Functions of each button in the Windows application.
 | Default Names | Use predefined names. |
 
 ## Functions
-  - Bot uses a preinstalled Python [JSON library](https://docs.python.org/3/library/json.html) to store variables. If the Client/Server is shut down while some GPIO pins are active, their state will be saved and will be restored next time you run the scripts.
+  - Bot uses a preinstalled Python [JSON](https://docs.python.org/3/library/json.html) library to store variables. If the Client/Server is shut down while some GPIO pins are active, their state will be saved and will be restored next time you run the scripts.
   - Bottom left bulb icon lights up if there is connection with the server.
   - Switch light and dark themes with the bottom left moon icon.
 
