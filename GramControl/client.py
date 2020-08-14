@@ -1,19 +1,13 @@
 # -*- coding: utf-8 -*-
-from aiogram import Bot, Dispatcher, executor, types
 from environs import Env, EnvValidationError
 from PyQt5.QtCore import Qt, QSize, QRect
 from PyQt5.QtWidgets import QApplication
 from PyQt5.QtGui import QIcon, QFont
-from aiogram.utils import exceptions
 from ui_layout import MainWindowUI
 from json_db import Database
-from html import escape
-import threading
-import asyncio
 import logging
 import img_res
 import sys
-# from qasync import QEventLoop, QThreadExecutor
 
 logging.basicConfig(handlers=[
                     logging.StreamHandler()
@@ -23,59 +17,24 @@ logging.basicConfig(handlers=[
                     level=logging.INFO
                     )
 
-aio_logger = logging.getLogger("aiogram")
-aio_logger.setLevel(logging.ERROR)
 logger = logging.getLogger('dev')
 logger.setLevel(logging.DEBUG)
 
 env = Env()
 env.read_env()
 try:
-    TELEGRAM_TOKEN = env("TELEGRAM_TOKEN")
-    MY_CHAT_ID = env.int("MY_CHAT_ID")
-    CHANNEL_ID = env.int("CHANNEL_ID")
+    DEV = env.bool("DEV")
 except EnvValidationError as env_error:
     logger.error(env_error)
 
 
-def botd():
-    executor.start_polling(dp, on_startup=on_startup, skip_updates=True)
-
-
-def create_thread():
-    # bot_daemon = threading.Thread(target=botd)
-    # bot_daemon.setDaemon(True)
-    # bot_daemon.start()
-    loop = asyncio.new_event_loop()
-    asyncio.set_event_loop(loop)
-    loop.create_task(botd())
-
-
-bot = Bot(token=TELEGRAM_TOKEN, parse_mode="html")
-dp = Dispatcher(bot)
-
-
 # Values
-chat_id_list = [CHANNEL_ID, MY_CHAT_ID]
 server_online = 'Server online.'
 server_offline = 'Server offline.'
 
 
-async def on_startup(dp):
-    await bot.send_message(CHANNEL_ID, 'check_server')
-
-
-# Handle errors. [BOT]
-@dp.errors_handler()
-async def errors_handler(update, error):
-    logger.error(f'Update: {update}\n{error}')
-
-
-# Handle messages. (Temporary lambda channel chat_id fix, issue #375)
-@dp.channel_post_handler(lambda message: message.chat.id in chat_id_list, content_types=['text'])
-async def send_text(message: types.Message):
-    new_text = escape(message.text.lower())
-    if new_text == 'server offline.':
+def send_text(message):
+    if message == 'server offline.':
         ui.status_icon.setIcon(QIcon(':/button/13.png'))
     else:
         ui.status_icon.setIcon(QIcon(':/button/12.png'))
@@ -242,12 +201,6 @@ class Logic():
             self.data['home']['button1'] = False
             ui.switch_1.setIcon(QIcon(ui.img_off))
         self.db.save_database(self.data)
-        # loop = asyncio.get_event_loop()
-        # loop = asyncio.new_event_loop()
-        # asyncio.set_event_loop(loop)
-        dp.loop.run_until_complete(toggle_pin('pin_1'))
-        # asyncio.run(toggle_pin('pin_1'))
-        # dp.loop.close()
 
     def toggle_switch_2(self):
         if ui.switch_2.isChecked():
@@ -257,7 +210,6 @@ class Logic():
             self.data['home']['button2'] = False
             ui.switch_2.setIcon(QIcon(ui.img_off))
         self.db.save_database(self.data)
-        dp.loop.run_until_complete(toggle_pin('pin_2'))
 
     def toggle_switch_3(self):
         if ui.switch_3.isChecked():
@@ -267,21 +219,10 @@ class Logic():
             self.data['home']['button3'] = False
             ui.switch_3.setIcon(QIcon(ui.img_off))
         self.db.save_database(self.data)
-        dp.loop.run_until_complete(toggle_pin('pin_3'))
-
-
-async def toggle_pin(pin):
-    logger.info(pin)
-    # await asyncio.sleep(2)
-    # loop = asyncio.get_event_loop()
-    await bot.send_message(CHANNEL_ID, pin)
 
 
 if __name__ == '__main__':
-    create_thread()
     app = QApplication(sys.argv)
-    # loop = QEventLoop(app)
-    # asyncio.set_event_loop(loop)
     app.setFont(QFont('century gothic', 20, 50))
     ui = MainWindowUI()
     ui.ui_setup()
