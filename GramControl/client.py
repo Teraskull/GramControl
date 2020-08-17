@@ -5,8 +5,10 @@ from PyQt5.QtWidgets import QApplication
 from PyQt5.QtGui import QIcon, QFont
 from ui_layout import MainWindowUI
 from json_db import Database
+from threading import Thread
 import logging
 import img_res
+import socket
 import sys
 
 logging.basicConfig(handlers=[
@@ -23,21 +25,16 @@ logger.setLevel(logging.DEBUG)
 env = Env()
 env.read_env()
 try:
-    DEV = env.bool("DEV")
+    HOST = env("HOST")
+    PORT = env.int("PORT")
 except EnvValidationError as env_error:
     logger.error(env_error)
 
 
 # Values
+client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 server_online = 'Server online.'
 server_offline = 'Server offline.'
-
-
-def send_text(message):
-    if message == 'server offline.':
-        ui.status_icon.setIcon(QIcon(':/button/13.png'))
-    else:
-        ui.status_icon.setIcon(QIcon(':/button/12.png'))
 
 
 class Logic():
@@ -75,6 +72,10 @@ class Logic():
         ui.edit_button.clicked.connect(self.edit_mode)
         ui.s_switch_1.clicked.connect(self.set_names)
         ui.mode_button.clicked.connect(self.set_lightmode)
+
+        clientThread = ClientThread()
+        clientThread.daemon = True
+        clientThread.start()
 
     def set_lightmode(self):
         light = (236, 240, 241)
@@ -194,31 +195,61 @@ class Logic():
                                       "QPushButton:checked{border-image: url(:/button/on);}")
 
     def toggle_switch_1(self):
-        if ui.switch_1.isChecked():
-            self.data['home']['button1'] = True
-            ui.switch_1.setIcon(QIcon(ui.img_on))
-        else:
-            self.data['home']['button1'] = False
-            ui.switch_1.setIcon(QIcon(ui.img_off))
-        self.db.save_database(self.data)
+        try:
+            client.send('pin_1'.encode())
+            if ui.switch_1.isChecked():
+                self.data['home']['button1'] = True
+                ui.switch_1.setIcon(QIcon(ui.img_on))
+            else:
+                self.data['home']['button1'] = False
+                ui.switch_1.setIcon(QIcon(ui.img_off))
+            self.db.save_database(self.data)
+        except OSError:
+            pass
 
     def toggle_switch_2(self):
-        if ui.switch_2.isChecked():
-            self.data['home']['button2'] = True
-            ui.switch_2.setIcon(QIcon(ui.img_on))
-        else:
-            self.data['home']['button2'] = False
-            ui.switch_2.setIcon(QIcon(ui.img_off))
-        self.db.save_database(self.data)
+        try:
+            client.send('pin_2'.encode())
+            if ui.switch_2.isChecked():
+                self.data['home']['button2'] = True
+                ui.switch_2.setIcon(QIcon(ui.img_on))
+            else:
+                self.data['home']['button2'] = False
+                ui.switch_2.setIcon(QIcon(ui.img_off))
+            self.db.save_database(self.data)
+        except OSError:
+            pass
 
     def toggle_switch_3(self):
-        if ui.switch_3.isChecked():
-            self.data['home']['button3'] = True
-            ui.switch_3.setIcon(QIcon(ui.img_on))
-        else:
-            self.data['home']['button3'] = False
-            ui.switch_3.setIcon(QIcon(ui.img_off))
-        self.db.save_database(self.data)
+        try:
+            client.send('pin_3'.encode())
+            if ui.switch_3.isChecked():
+                self.data['home']['button3'] = True
+                ui.switch_3.setIcon(QIcon(ui.img_on))
+            else:
+                self.data['home']['button3'] = False
+                ui.switch_3.setIcon(QIcon(ui.img_off))
+            self.db.save_database(self.data)
+        except OSError:
+            pass
+
+
+class ClientThread(Thread):
+    def __init__(self):
+        Thread.__init__(self)
+
+    def run(self):
+        try:
+            client.connect((HOST, PORT))
+            client.send('check_server'.encode())
+            while True:
+                data = client.recv(1024)
+                if data.decode() == server_online:
+                    ui.status_icon.setIcon(QIcon(':/button/12.png'))
+        except ConnectionRefusedError:
+            pass
+        except ConnectionResetError:
+            ui.status_icon.setIcon(QIcon(':/button/13.png'))
 
 
 if __name__ == '__main__':
