@@ -6,7 +6,7 @@
 </h1>
 
 <p align="center">
-  IoT device based on the Telegram API.
+  IoT device based on the Python Socket module.
 </p>
 
 <p align="center">
@@ -22,7 +22,7 @@
 </p>
 
 **GramControl** is a Windows GUI client application for communicating with the GramBase server.\
-**GramBase** is a [Telegram](https://telegram.org/) Python bot, that acts as a server and controls 3 separate outputs via the GPIO pins of a Raspberry Pi.
+**GramBase** is a [TCP/IP](https://docs.python.org/3/library/socket.html) Python server, that controls 3 separate outputs via the GPIO pins of a Raspberry Pi.
 
 ### Hardware:
 - Raspberry Pi to run the server (Tested on Model 3B+)
@@ -38,13 +38,13 @@
 
 * Python 3.6+
 
-* [Aiogram](https://github.com/aiogram/aiogram) library
-    ```console
-    $ pip install aiogram
+* [Environs](https://pypi.org/project/environs/) library
+    ```bash
+    > pip install environs
     ```
 * [PyQt5](https://pypi.org/project/PyQt5/) GUI framework
-    ```console
-    $ pip install pyqt5
+    ```bash
+    > pip install pyqt5
     ```
 
 
@@ -52,51 +52,50 @@
 
 * Python 3.6+
 
-* [Aiogram](https://github.com/aiogram/aiogram) library
-    ```console
-    $ pip install aiogram
+* [Environs](https://pypi.org/project/environs/) library
+    ```bash
+    $ pip install environs
     ```
 * [GPIO Zero](https://pypi.org/project/gpiozero/) library (Preinstalled on Raspberry Pi OS)
-    ```console
+    ```bash
     $ pip install gpiozero
     ```
 
 ## Getting started
 
-To start, you need a [Telegram](https://telegram.org/) account.
-Create two bots (Client and Server), disable their Group Privacy, allow Groups, and get their `TOKEN` using [@BotFather](https://core.telegram.org/bots#6-botfather).
-As the Telegram API does not allow bots to communicate with each other directly, 
-create a Telegram [channel](https://telegram.org/faq_channels) and add created bots to it.
-Write down the channel `ID`. You can find the `ID` by writing in the channel and forwarding the message to [@my_id_bot](https://t.me/my_id_bot).\
-*Note: You should receive a reply like "This channel's ID is `-1234567890`"*\
-Repeat the process with your own `CHAT_ID`.
 
-To be able to use the scripts with the bots, create an `.env` file, paste the following properties, and replace the `TOKEN`, `CHAT_ID` and the `ID` with your own values.
+```bash
+    $ git clone https://github.com/Teraskull/GramControl
+
+    $ cd GramControl
+```
+
+Create an `.env` file in the root of both `GramBase` and `GramControl` directories, paste the following properties, and replace the `HOST` and `PORT` with your own values.
 
 ```python
-TELEGRAM_TOKEN = "TOKEN"
-MY_CHAT_ID = "CHAT_ID"
-CHANNEL_ID = "ID"
+HOST = 'Your Raspberry Pi IP address'
+PORT = 'Any port >1024'
 ```
 
 
-Generally, you don't need to configure anything in the scripts, everything should work after you setup your `.env` file.
-Once everything is set up, navigate to the directories and run the scripts:
-#### On Windows:
-  ```console
-> cd /path/to/script/directory/
-> python client.py
-  ```
-#### On Raspberry Pi OS:
-  ```console
-$ cd /path/to/script/directory/
-$ python bot.py
-  ```
+Generally, you don't need to configure anything in the scripts, everything should work after you setup your `.env` files.
+
 
 ## User manual
 
-  - Find your bots, created with [@BotFather](https://telegram.me/BotFather), using the search bar.
-  - Once found, press `START` on the bottom to initialize them.
+Once everything is set up, navigate to the directories and run the scripts.
+First, run the server:
+#### On Raspberry Pi OS:
+  ```bash
+$ cd /path/to/script/GramBase/
+$ python server.py
+  ```
+Next, run the client application:
+#### On Windows:
+  ```bash
+> cd /path/to/script/GramControl/
+> python client.py
+  ```
 
 ### Windows Application description
 
@@ -110,7 +109,7 @@ Functions of each button in the Windows application.
 | Default Names | Use predefined names. |
 
 ## Functions
-  - Bot uses a preinstalled Python [JSON](https://docs.python.org/3/library/json.html) library to store variables. If the Client/Server is shut down while some GPIO pins are active, their state will be saved and will be restored next time you run the scripts.
+  - The preinstalled Python [JSON](https://docs.python.org/3/library/json.html) library is used to store variables. If the Client/Server is shut down while some GPIO pins are active, their state will be saved and will be restored next time you run the scripts.
   - Bottom left bulb icon lights up if there is connection with the server.
   - Switch light and dark themes with the bottom left moon icon.
 
