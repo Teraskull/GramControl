@@ -1,2 +1,2 @@
-PyQt5==5.14.1
-pyTelegramBotAPI==3.6.7
+environs==8.0.0
+PyQt5==5.15.0
