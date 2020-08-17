@@ -14,7 +14,7 @@
     <img src="https://img.shields.io/badge/Version-v4.0.0-brightgreen.svg?style=flat-square" alt="Version" />
   </a>
   <a style="text-decoration:none" href="https://github.com/Teraskull/GramControl">
-    <img src="https://img.shields.io/badge/Release-Stable-blueviolet.svg?style=flat-square" alt="Release" />
+    <img src="https://img.shields.io/badge/stability-unstable-yellow.svg?style=flat-square" alt="Stability" />
   </a>
   <a style="text-decoration:none" href="https://github.com/Teraskull/GramControl/blob/master/LICENSE">
     <img src="https://img.shields.io/github/license/Teraskull/GramControl?style=flat-square" alt="License" />
